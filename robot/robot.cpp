@@ -52,10 +52,15 @@ float pos_x = 0,pos_y = 5,pos_z = 10;
 
 void drawRobotHead(void) {
     glPushMatrix();
+    
+    // position
+    glTranslatef(0,2.5,0); 
+    
+    // rotation
+    //glRotatef(30,0,1,0);
 
     // Head
     glColor3f(0,0.2f,0.8f);
-    glTranslatef(0,2.5,0); 
     glutSolidCube(0.8f);
     
     // Decoration
@@ -136,16 +141,19 @@ void drawRobotArm(float factor) {
     
     // Joint1
     glColor3f(0.1f,0.1f,0.1f);
-    glPushMatrix();
     glTranslatef(0.1f,-0.15f,0); 
+    glPushMatrix();
     glScalef(0.12f,0.12f,0.12f);
     glutSolidSphere(1,10,10);
     glPopMatrix();
     
+    // Joint1 rotation
+    //glRotatef((factor>=0?1:-1)*-30,1,0,0);
+
     // Upper
     glColor3f(0.1f,0.2f,0.8f);
+    glTranslatef(0.15f,-0.5f,0); 
     glPushMatrix();
-    glTranslatef(0.25f,-0.65f,0); 
     glRotatef(15,0,0,1);
     glScalef(1,2.2f,1);
     glutSolidCube(0.4f);
@@ -153,30 +161,35 @@ void drawRobotArm(float factor) {
 
     // Joint2
     glColor3f(0.1f,0.1f,0.1f);
+    glTranslatef(0.15f,-0.45f,0);
     glPushMatrix();
-    glTranslatef(0.4f,-1.1f,0);
     glScalef(0.12f,0.12f,0.12f);
     glutSolidSphere(1,10,10);
     glPopMatrix();
     
+    // Joint2 rotation
+    //if(factor >= 0) glRotatef(-30,1,0,0);
+    //if(factor >= 0) glRotatef(-45,0,1,0);
+    
     // Lower
     glColor3f(0.1f,0.2f,0.8f);
+    glTranslatef(0.03f,-0.5f,0); 
     glPushMatrix();
-    glTranslatef(0.43f,-1.6,0); 
     glScalef(1,2.2f,1);
     glutSolidCube(0.4f);
     glPopMatrix();
     
     // Hand
     glColor3f(0,0.2f,0.8f);
+    glTranslatef(0.02f,-0.59f,0);
     glPushMatrix();
-    glTranslatef(0.45f,-2.19f,0);
     glScalef(0.12f,0.12f,0.12f);
     glutSolidSphere(2.0f,10,10);
     glPopMatrix();
     
     glPopMatrix();
 }
+
 
 void drawRobotPelvis(void) {
     glPushMatrix();
@@ -186,6 +199,7 @@ void drawRobotPelvis(void) {
     glutSolidCube(0.5f);
     glPopMatrix();
 }
+
 void drawRobotLeg(float factor) {
     glPushMatrix();
     glRotatef(factor,0,1,0);
@@ -193,32 +207,41 @@ void drawRobotLeg(float factor) {
 
     // Joint1
     glColor3f(0.1f,0.1f,0.1f);
-    glPushMatrix();
     glTranslatef(0.4f,0,0); 
+    glPushMatrix();
     glScalef(0.12f,0.12f,0.12f);
     glutSolidSphere(1.3f,10,10);
     glPopMatrix();
+    
+    // Joint1 rotation
+    //glRotatef(15,1,0,0);
 
     // Upper
     glColor3f(0.1f,0.2f,0.8f);
+    glTranslatef(0.15f,-0.6f,0); 
     glPushMatrix();
-    glTranslatef(0.55f,-0.5f,0); 
     glRotatef(15,0,0,1);
     glScalef(1,3.0f,1);
     glutSolidCube(0.32f);
     glPopMatrix();
     
+    // Joint2
+    glTranslatef(0.1f,-0.4f,0); 
+    
+    // Joint2 rotation
+    //glRotatef((factor>=0?1:-1)*30,1,0,0);
+
     // Lower
+    glTranslatef(-0.01f,-1.4f,0);
     glPushMatrix();
-    glTranslatef(0.64f,-2.3f,0);
     glRotatef(-90,1,0,0);
     glutSolidCylinder(0.3f,1.5f,20,5);
     glPopMatrix();
     
     // Foot
     glColor3f(0.2,0.6f,0.3f);
+    glTranslatef(0.01f,-0.3f,0);
     glPushMatrix();
-    glTranslatef(0.65f,-2.6f,0);
     if(factor < 0) {
         glTranslatef(0,0,-0.05f);
         glRotatef(180+85,1,0,0);
@@ -230,6 +253,17 @@ void drawRobotLeg(float factor) {
     glutSolidCone(0.5f,1.0f,20,3);
     glPopMatrix();
 
+    glPopMatrix();
+}
+
+void drawRobotMainBody(void) {
+    glPushMatrix();
+    //glRotatef(10,0,1,0);
+
+    drawRobotBody();
+    drawRobotArm(0);
+    drawRobotArm(-180);
+    
     glPopMatrix();
 }
 
@@ -246,22 +280,12 @@ void handle_draw(void) {
     glPushMatrix(); // global rotation
     
     drawRobotHead();
-    drawRobotBody();
-    drawRobotArm(0);
-    drawRobotArm(-180);
+    drawRobotMainBody();
     drawRobotPelvis();
     drawRobotLeg(0);
     drawRobotLeg(-180);
 
     glPopMatrix(); // pop global rotation
-
-    /*
-    glTranslatef(2,2.5,0);
-    glRotatef(90,1,0,0);
-    
-    glutSolidCylinder(1.0f,5,20,5);
-    glTranslatef(-4,0,0);
-    glutSolidCylinder(1.0f,5,20,5);*/
 
     glutSwapBuffers();
 }
