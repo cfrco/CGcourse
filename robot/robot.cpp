@@ -273,6 +273,8 @@ void handle_draw(void) {
     
     GLfloat ambientColor[] = {0.2f,0.2f,0.2f,1.0f};
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT,ambientColor);
+
+    glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
     
     gluLookAt(pos_x,pos_y,pos_z,0,0,0,0,1,0);
     glRotatef(fangle,0,1,0);
