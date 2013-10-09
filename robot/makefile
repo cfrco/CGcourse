@@ -1,3 +1,6 @@
 
-build : robot.cpp
-	g++ robot.cpp -I ../  -lGL -lGLU -lglut -o robot
+build : robot.cpp rotation.o
+	g++ $^ -I ../  -lGL -lGLU -lglut -o robot
+
+rotation.o : rotation.cpp
+	g++ -c rotation.cpp
