@@ -20,4 +20,9 @@ enum eJoint {
     JOINT_LENGTH
 };
 
+typedef struct rotation {
+    GLfloat (*state)[JOINT_LENGTH][5];
+    int totalStep;
+}rotation_t;
+
 #endif

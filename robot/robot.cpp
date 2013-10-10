@@ -31,12 +31,12 @@ int main(int argc, char *argv[]) {
 // parameters
 float fangle = 0;
 float pos_x = 0,pos_y = 5,pos_z = 10;
-std::queue<GLfloat (*)[][5]> ActionQueue;
+std::queue<rotation_t> actionQueue;
 
 // rotation state
 int nowStep,totalStep;
-#define rotationArray (*nowRotation)
-GLfloat rotationInit[JOINT_LENGTH][5] = { };
+GLfloat rotationArray[JOINT_LENGTH][5] = {};
+GLfloat rotationInit[JOINT_LENGTH][5] = {};
 GLfloat rotationState[JOINT_LENGTH][5] = {
     {0,30}, // JOINT_BODY
     {0,25,0,0,-20}, // JOINT_HEAD
@@ -50,7 +50,7 @@ GLfloat rotationState[JOINT_LENGTH][5] = {
     {-20}, // JOINT_LEG_RIGHT2
 };
 
-GLfloat (*nowRotation)[JOINT_LENGTH][5] = &rotationState;
+GLfloat (*nowRotation)[JOINT_LENGTH][5] = &rotationInit;
 GLfloat (*nextRotation)[JOINT_LENGTH][5] = &rotationInit;
 
 void GLInit(void) {
@@ -77,6 +77,8 @@ void handle_reshape(int w,int h) {
     glLoadIdentity();
 }
 
+static rotation_t state1 = {&rotationInit,100};
+static rotation_t state2 = {&rotationState,100};
 void handle_keyboard(unsigned char key,int x,int y) {
     switch(key) {
         // moving camera
@@ -97,11 +99,48 @@ void handle_keyboard(unsigned char key,int x,int y) {
             pos_y = 5;
             pos_z = 10;
             break;
+        
+        case '1':
+            actionQueue.push(state2);
+            actionQueue.push(state1);
+            break;
     }
 }
 
+int calculateRotation() {
+    if(nextRotation == NULL || nowRotation == nextRotation || nowStep > totalStep) 
+        return 0;
+    
+    int i,j,k;
+    //int now = NowState*LEN_ROTARR, next = NextState*LEN_ROTARR;
+    GLfloat diff,ratio = (GLfloat)nowStep/(GLfloat)totalStep;
+
+    for(i=0;i<JOINT_LENGTH;++i) {
+        for(j=0;j<5;++j){
+            diff = (*nextRotation)[i][j]-(*nowRotation)[i][j];
+            rotationArray[i][j] = (*nowRotation)[i][j]+diff*ratio;
+        } 
+    }
+    
+    return 1;
+}
+
 void handle_timer(int value) {
-    //if(calculateRotation()) NowStep++;
+    if(calculateRotation()) nowStep++;
+    if(nowStep >= totalStep) {
+        nowRotation = nextRotation;
+        //nextRotation = NULL;
+    }
+
+    if(nextRotation == nowRotation){
+        if(!actionQueue.empty()) {
+            rotation_t rp = actionQueue.front();
+            nextRotation = rp.state;
+            totalStep = rp.totalStep;
+            actionQueue.pop();
+            nowStep = 0;
+        }
+    }
 
     glutTimerFunc(10,handle_timer,0);
 }
