@@ -50,8 +50,22 @@ GLfloat rotationState[JOINT_LENGTH][5] = {
     {-20}, // JOINT_LEG_RIGHT2
 };
 
+GLfloat rotationState2[JOINT_LENGTH][5] = {
+    {},
+    {},
+    {},
+    {}, // JOINT_ARM_RIGHT1
+    {-90}, // JOINT_ARM_LEFT2
+    {90}, // JOINT_ARM_RIGHT2
+    {}, // JOINT_LEG_LEFT1
+    {}, // JOINT_LEG_RIGHT1
+    {}, // JOINT_LEG_LEFT2
+    {}, // JOINT_LEG_RIGHT2
+};
 GLfloat (*nowRotation)[JOINT_LENGTH][5] = &rotationInit;
 GLfloat (*nextRotation)[JOINT_LENGTH][5] = &rotationInit;
+
+char attackState = 0;
 
 void GLInit(void) {
     glClearColor(0.0f,0.0f,0.0f,1.0f);
@@ -79,6 +93,7 @@ void handle_reshape(int w,int h) {
 
 static rotation_t state1 = {&rotationInit,100};
 static rotation_t state2 = {&rotationState,100};
+static rotation_t state3 = {&rotationState2,100};
 void handle_keyboard(unsigned char key,int x,int y) {
     switch(key) {
         // moving camera
@@ -104,6 +119,10 @@ void handle_keyboard(unsigned char key,int x,int y) {
             actionQueue.push(state2);
             actionQueue.push(state1);
             break;
+        case '2':
+            actionQueue.push(state3);
+            attackState = 1;
+            break;
     }
 }
 
@@ -127,10 +146,7 @@ int calculateRotation() {
 
 void handle_timer(int value) {
     if(calculateRotation()) nowStep++;
-    if(nowStep >= totalStep) {
-        nowRotation = nextRotation;
-        //nextRotation = NULL;
-    }
+    if(nowStep >= totalStep) nowRotation = nextRotation;
 
     if(nextRotation == nowRotation){
         if(!actionQueue.empty()) {
@@ -145,7 +161,7 @@ void handle_timer(int value) {
     glutTimerFunc(10,handle_timer,0);
 }
 
-void drawRobotHead(void) {
+void drawRobotHead() {
     glPushMatrix();
     
     // position
@@ -201,7 +217,7 @@ void drawRobotHead(void) {
     glPopMatrix();
 }
 
-void drawRobotBody(void) {
+void drawRobotBody() {
     glPushMatrix();
 
     glTranslatef(0,1.15f,0); 
@@ -283,11 +299,19 @@ void drawRobotArm(float factor) {
     glutSolidSphere(2.0f,10,10);
     glPopMatrix();
     
+    if(attackState) {
+        glPushMatrix();
+        //glScalef(0.12f,0.12f,0.12f);
+        glRotatef(90,1,0,0);
+        glutSolidCone(0.3f,1.0f,10,10);
+        glPopMatrix();
+    }
+
     glPopMatrix();
 }
 
 
-void drawRobotPelvis(void) {
+void drawRobotPelvis() {
     glPushMatrix();
     glColor3f(0.5f,0.5f,0);
     glTranslatef(0,0.2f,0); 
@@ -370,7 +394,7 @@ void drawRobot() {
     glPopMatrix();
 }
 
-void handle_draw(void) {
+void handle_draw() {
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     
