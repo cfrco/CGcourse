@@ -5,6 +5,7 @@
 
 #include"catGL.h"
 #include"rotation.h"
+#include"animation.h"
 
 void GLInit(void);
 void handle_reshape(int w,int h);
@@ -54,14 +55,15 @@ GLfloat rotationState2[JOINT_LENGTH][5] = {
     {},
     {},
     {},
-    {}, // JOINT_ARM_RIGHT1
-    {-90}, // JOINT_ARM_LEFT2
-    {90}, // JOINT_ARM_RIGHT2
-    {}, // JOINT_LEG_LEFT1
-    {}, // JOINT_LEG_RIGHT1
-    {}, // JOINT_LEG_LEFT2
-    {}, // JOINT_LEG_RIGHT2
+    {},
+    {-90},
+    {90},
+    {},
+    {},
+    {},
+    {},
 };
+
 GLfloat (*nowRotation)[JOINT_LENGTH][5] = &rotationInit;
 GLfloat (*nextRotation)[JOINT_LENGTH][5] = &rotationInit;
 
@@ -121,7 +123,11 @@ void handle_keyboard(unsigned char key,int x,int y) {
             break;
         case '2':
             actionQueue.push(state3);
-            attackState = 1;
+            attackState = 1-attackState;
+            break;
+        case '3':
+            actionQueue.push(state_walk1);
+            actionQueue.push(state_walk2);
             break;
     }
 }
