@@ -14,7 +14,7 @@ int width,height;
 int main(int argc, char *argv[])
 {
     CGL_INIT_WINDOW(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH,
-                    480,480,200,200,"Blending");
+                    480,480,200,200,"TextureMapping");
     
     glutReshapeFunc(handle_reshape);
     glutDisplayFunc(handle_draw);
@@ -68,14 +68,22 @@ void handle_draw() {
     glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);// Linear Filtering
 
     glRotatef(angle,0,0,1);
+    /*
     glBegin(GL_QUADS);
     glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f, -1.0f,  -5.0f);
     glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f, -1.0f,  -8.0f);    
     glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f,  1.0f,  -3.0f);    
     glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f,  1.0f,  -3.0f);   
+    glEnd();*/
+    
+    glTranslatef(1.5f,-2.0f,0);
+    glBegin(GL_TRIANGLES);
+    glTexCoord2f(0.0f, 1.0f); glVertex3f(-3.0f,  1.0f,  -4.0f);
+    glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  -4.0f);    
+    glTexCoord2f(0.5f, 0.5f); glVertex3f(-2.0f,  4.0f,  -4.0f);    
     glEnd();
 
-    angle += 2;
+    //angle += 2;
 
     glutSwapBuffers();
 }

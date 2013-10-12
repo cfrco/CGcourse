@@ -4,6 +4,7 @@
 #include<queue>
 
 #include"catGL.h"
+#include"catPng.h"
 #include"rotation.h"
 #include"animation.h"
 
@@ -23,6 +24,17 @@ int main(int argc, char *argv[]) {
     glutTimerFunc(10,handle_timer,0);
     glutIdleFunc(handle_draw);
     
+    int width,height;
+    GLuint texture;
+    unsigned char *buffer = getPng("../texture/robot.png",&width,&height);
+    glGenTextures(1,&texture);
+    glBindTexture(GL_TEXTURE_2D,texture);
+    glTexImage2D(GL_TEXTURE_2D,0,4,width,height,
+                 0,GL_RGBA,GL_UNSIGNED_BYTE,buffer);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);// Linear Filtering
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);// Linear Filtering
+    freePng(buffer);
+
     GLInit();
 
     glutMainLoop();
@@ -79,6 +91,10 @@ void GLInit(void) {
 
     glDepthFunc(GL_LESS);
     glEnable(GL_DEPTH_TEST);
+
+    // Texture Mapping
+    glEnable(GL_TEXTURE_2D);
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_NICEST);
 }
 
 
@@ -231,7 +247,11 @@ void drawRobotBody() {
     glColor3f(0.1f,0.2f,0.8f);
     glPushMatrix();
     glScalef(2,2.2f,0.8f);
+    glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+    glEnable(GL_TEXTURE_GEN_T);
     glutSolidCube(0.8f);
+    glDisable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+    glDisable(GL_TEXTURE_GEN_T);
     glPopMatrix();
     
     glColor3f(0.8f,0,0.2f);
