@@ -21,10 +21,9 @@ int main(int argc, char *argv[])
     glutIdleFunc(handle_draw);
 
     GLInit();
-    buffer = getPng("/home/cat/robot.png",&width,&height);
+    buffer = getPng("./robot.png",&width,&height);
 
     glutMainLoop();
-    
     freePng(buffer);
     return 0;
 }
