@@ -26,6 +26,21 @@ unsigned char* getPng(const char * filename,int *width,int *height) {
     return buffer;
 }
 
+#include<stdio.h>
+void getFlip(unsigned char *src,int w,int h,int r1,int c1,int tw,int th, unsigned char *dst) {
+    int r,c,t,k = 0;
+
+    for(r=0;r<th;++r) {
+        for(c=0;c<tw;++c) {
+            t = ((r1+r)*w+c1+c)*4;
+            dst[k++] = src[t];
+            dst[k++] = src[t+1];
+            dst[k++] = src[t+2];
+            dst[k++] = src[t+3];
+        } 
+    }
+} 
+
 void freePng(unsigned char *p) {
     free(p);
 }
