@@ -80,7 +80,6 @@ void handle_reshape(int w,int h) {
     glLoadIdentity();
 }
 
-GLfloat HeadRotation[5] = {30};
 void handle_keyboard(unsigned char key,int x,int y) {
     switch(key) {
         // moving camera
@@ -113,6 +112,10 @@ void handle_keyboard(unsigned char key,int x,int y) {
         case '3':
             stopAll(joints);
             break;
+		case '4':
+            //pushFullState(joints,&gangnam_style1,20);
+			Gangnam_style(joints);
+			break;
     }
 }
 
