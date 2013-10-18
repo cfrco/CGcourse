@@ -13,6 +13,11 @@ void handle_draw(void);
 void handle_keyboard(unsigned char key,int x,int y);
 void handle_timer(int value);
 
+// parameters
+float fangle = 0;
+float pos_x = 0,pos_y = 5,pos_z = 10;
+joint_t joints[JOINT_LENGTH];
+
 int main(int argc, char *argv[]) {
     CGL_INIT_WINDOW(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH,
                     480,640,200,200,"Robot");
@@ -23,21 +28,14 @@ int main(int argc, char *argv[]) {
     glutTimerFunc(10,handle_timer,0);
     glutIdleFunc(handle_draw);
     
+    jointInit(joints,JOINT_LENGTH);
     GLInit();
 
     glutMainLoop();
     return 0;
 }
 
-// parameters
-float fangle = 0;
-float pos_x = 0,pos_y = 5,pos_z = 10;
-std::queue<rotation_t> actionQueue;
-
-// rotation state
-int nowStep,totalStep;
-GLfloat rotationArray[JOINT_LENGTH][5] = {};
-GLfloat rotationInit[JOINT_LENGTH][5] = {};
+/*
 GLfloat rotationState[JOINT_LENGTH][5] = {
     {0,30}, // JOINT_BODY
     {0,25,0,0,-20}, // JOINT_HEAD
@@ -62,10 +60,7 @@ GLfloat rotationState2[JOINT_LENGTH][5] = {
     {},
     {},
     {},
-};
-
-GLfloat (*nowRotation)[JOINT_LENGTH][5] = &rotationInit;
-GLfloat (*nextRotation)[JOINT_LENGTH][5] = &rotationInit;
+};*/
 
 char attackState = 0;
 
@@ -93,9 +88,7 @@ void handle_reshape(int w,int h) {
     glLoadIdentity();
 }
 
-static rotation_t state1 = {&rotationInit,100};
-static rotation_t state2 = {&rotationState,100};
-static rotation_t state3 = {&rotationState2,100};
+GLfloat HeadRotation[5] = {30};
 void handle_keyboard(unsigned char key,int x,int y) {
     switch(key) {
         // moving camera
@@ -118,51 +111,25 @@ void handle_keyboard(unsigned char key,int x,int y) {
             break;
         
         case '1':
-            actionQueue.push(state2);
-            actionQueue.push(state1);
+            pushFullState(joints,&aniWalkRotation1,100);
+            pushFullState(joints,&aniWalkRotation2,100);
             break;
         case '2':
-            actionQueue.push(state3);
+            //actionQueue.push(state3);
             attackState = 1-attackState;
             break;
         case '3':
-            actionQueue.push(state_walk1);
-            actionQueue.push(state_walk2);
+            pushRotation(&joints[JOINT_HEAD],&HeadRotation,100);
+            //actionQueue.push(state_walk1);
+            //actionQueue.push(state_walk2);
             break;
     }
 }
 
-int calculateRotation() {
-    if(nextRotation == NULL || nowRotation == nextRotation || nowStep > totalStep) 
-        return 0;
-    
-    int i,j,k;
-    //int now = NowState*LEN_ROTARR, next = NextState*LEN_ROTARR;
-    GLfloat diff,ratio = (GLfloat)nowStep/(GLfloat)totalStep;
-
-    for(i=0;i<JOINT_LENGTH;++i) {
-        for(j=0;j<5;++j){
-            diff = (*nextRotation)[i][j]-(*nowRotation)[i][j];
-            rotationArray[i][j] = (*nowRotation)[i][j]+diff*ratio;
-        } 
-    }
-    
-    return 1;
-}
-
 void handle_timer(int value) {
-    if(calculateRotation()) nowStep++;
-    if(nowStep >= totalStep) nowRotation = nextRotation;
-
-    if(nextRotation == nowRotation){
-        if(!actionQueue.empty()) {
-            rotation_t rp = actionQueue.front();
-            nextRotation = rp.state;
-            totalStep = rp.totalStep;
-            actionQueue.pop();
-            nowStep = 0;
-        }
-    }
+    int i;
+    for(i=0;i<JOINT_LENGTH;++i)
+        calculateRotation(&joints[i]);
 
     glutTimerFunc(10,handle_timer,0);
 }
@@ -174,7 +141,7 @@ void drawRobotHead() {
     glTranslatef(0,2.5,0); 
     
     // rotation
-    DoRotate(rotationArray[JOINT_HEAD]);
+    DoRotate(joints[JOINT_HEAD].rotation);
 
     // Head
     glColor3f(0,0.2f,0.8f);
@@ -265,8 +232,8 @@ void drawRobotArm(float factor) {
     glPopMatrix();
     
     // Joint1 rotation
-    if(factor>=0) DoRotate(rotationArray[JOINT_ARM_LEFT1]);
-    else DoRotate(rotationArray[JOINT_ARM_RIGHT1]);
+    if(factor>=0) DoRotate(joints[JOINT_ARM_LEFT1].rotation);
+    else DoRotate(joints[JOINT_ARM_RIGHT1].rotation);
 
     // Upper
     glColor3f(0.1f,0.2f,0.8f);
@@ -286,8 +253,8 @@ void drawRobotArm(float factor) {
     glPopMatrix();
     
     // Joint2 rotation
-    if(factor>=0) DoRotate(rotationArray[JOINT_ARM_LEFT2]);
-    else DoRotate(rotationArray[JOINT_ARM_RIGHT2]);
+    if(factor>=0) DoRotate(joints[JOINT_ARM_LEFT2].rotation);
+    else DoRotate(joints[JOINT_ARM_RIGHT2].rotation);
     
     // Lower
     glColor3f(0.1f,0.2f,0.8f);
@@ -340,8 +307,8 @@ void drawRobotLeg(float factor) {
     glPopMatrix();
     
     // Joint1 rotation
-    if(factor>=0) DoRotate(rotationArray[JOINT_LEG_LEFT1]);
-    else DoRotate(rotationArray[JOINT_LEG_RIGHT1]);
+    if(factor>=0) DoRotate(joints[JOINT_LEG_LEFT1].rotation);
+    else DoRotate(joints[JOINT_LEG_RIGHT1].rotation);
 
     // Upper
     glColor3f(0.1f,0.2f,0.8f);
@@ -356,8 +323,8 @@ void drawRobotLeg(float factor) {
     glTranslatef(0.1f,-0.4f,0); 
     
     // Joint2 rotation
-    if(factor>=0) DoRotate(rotationArray[JOINT_LEG_LEFT2]);
-    else DoRotate(rotationArray[JOINT_LEG_RIGHT2]);
+    if(factor>=0) DoRotate(joints[JOINT_LEG_LEFT2].rotation);
+    else DoRotate(joints[JOINT_LEG_RIGHT2].rotation);
 
     // Lower
     glTranslatef(-0.01f,-1.4f,0);
@@ -386,7 +353,7 @@ void drawRobotLeg(float factor) {
 
 void drawRobot() {
     glPushMatrix();
-    DoRotate(rotationArray[JOINT_BODY]);
+    DoRotate(joints[JOINT_BODY].rotation);
     
     drawRobotHead();
     drawRobotBody();
@@ -418,4 +385,3 @@ void handle_draw() {
 
     glutSwapBuffers();
 }
-

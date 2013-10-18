@@ -4,6 +4,8 @@
 #include<GL/glut.h>
 #include<GL/freeglut.h>
 
+#include<queue>
+
 void DoRotate(GLfloat rots[5]);
 
 enum eJoint {
@@ -20,9 +22,23 @@ enum eJoint {
     JOINT_LENGTH
 };
 
-typedef struct rotation {
-    GLfloat (*state)[JOINT_LENGTH][5];
-    int totalStep;
-}rotation_t;
+typedef struct joint{
+    int nowStep,totalStep; 
+    GLfloat rotation[5];
+    GLfloat (*now)[5];
+    GLfloat (*next)[5];
+    std::queue<GLfloat (*)[5]> rqueue;
+    std::queue<int> tqueue;
+}joint_t;
+
+void jointInit(joint_t *joints,int len);
+
+static GLfloat initRotation[5] = {};
+void calculateRotation(joint_t *joint);
+
+void pushRotation(joint_t *joint,GLfloat (*state)[5],int totalStep);
+
+void popAll(joint_t *joints);
+void pushFullState(joint_t *joints,GLfloat (*rotations)[JOINT_LENGTH][5],int total);
 
 #endif
