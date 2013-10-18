@@ -19,7 +19,6 @@ void jointInit(joint_t *joints,int len) {
 
 void calculateRotation(joint_t *joint) {
     if(!(joint->next == NULL || 
-         joint->now == joint->next || 
          joint->nowStep > joint->totalStep))
     {
         int i;
@@ -31,9 +30,10 @@ void calculateRotation(joint_t *joint) {
 
         joint->nowStep++;
     }
-    if(joint->nowStep >= joint->totalStep) joint->now = joint->next;
+
+    if(joint->nowStep >= joint->totalStep) {
+        joint->now = joint->next;
     
-    if(joint->now == joint->next) {
         if(!joint->rqueue.empty()) {
             GLfloat (*rp)[5] = joint->rqueue.front();
             joint->next = rp;
