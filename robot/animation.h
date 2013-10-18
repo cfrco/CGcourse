@@ -26,5 +26,5 @@ GLfloat aniWalkRotation2[JOINT_LENGTH][5] = {
     {-40},
 };
 
-static rotation_t state_walk1 = {&aniWalkRotation1,50};
-static rotation_t state_walk2 = {&aniWalkRotation2,50};
+//static rotation_t state_walk1 = {&aniWalkRotation1,50};
+//static rotation_t state_walk2 = {&aniWalkRotation2,50};
