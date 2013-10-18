@@ -6,8 +6,10 @@
 #include"catGL.h"
 #include"rotation.h"
 #include"animation.h"
+#include"menu.h"
 
 void GLInit(void);
+void GLMenu(void);
 void handle_reshape(int w,int h);
 void handle_draw(void);
 void handle_keyboard(unsigned char key,int x,int y);
@@ -30,6 +32,7 @@ int main(int argc, char *argv[]) {
     
     jointInit(joints,JOINT_LENGTH);
     GLInit();
+    GLMenu();
 
     glutMainLoop();
     return 0;
@@ -49,6 +52,22 @@ void GLInit(void) {
     glEnable(GL_DEPTH_TEST);
 }
 
+void handle_menu(int menu) {
+    switch(menu) {
+        // Main
+        case ME_WALK :
+            pushFullState(joints,&aniWalkRotation1,50);
+            pushFullState(joints,&aniWalkRotation2,50);
+            repeatAll(joints,true);
+        break;
+
+        case ME_EXIT : exit(0); break;
+        
+        // View
+        case ME_VIEW_SOLID : glPolygonMode(GL_FRONT_AND_BACK,GL_FILL); break;
+        case ME_VIEW_LINE  : glPolygonMode(GL_FRONT_AND_BACK,GL_LINE); break;
+    } 
+}
 
 void handle_reshape(int w,int h) {
     glViewport(0,0,(GLsizei)w,(GLsizei)h);
@@ -345,8 +364,6 @@ void handle_draw() {
     GLfloat ambientColor[] = {0.2f,0.2f,0.2f,1.0f};
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT,ambientColor);
 
-    //glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-    
     gluLookAt(pos_x,pos_y,pos_z,0,0,0,0,1,0);
     glRotatef(fangle,0,1,0);
     
