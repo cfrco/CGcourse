@@ -29,6 +29,7 @@ typedef struct joint{
     GLfloat (*next)[5];
     std::queue<GLfloat (*)[5]> rqueue;
     std::queue<int> tqueue;
+    bool repeat;
 }joint_t;
 
 void jointInit(joint_t *joints,int len);
@@ -41,4 +42,6 @@ void pushRotation(joint_t *joint,GLfloat (*state)[5],int totalStep);
 void popAll(joint_t *joints);
 void pushFullState(joint_t *joints,GLfloat (*rotations)[JOINT_LENGTH][5],int total);
 
+void repeatAll(joint_t *joints,bool rep);
+void stopAll(joint_t *joints);
 #endif

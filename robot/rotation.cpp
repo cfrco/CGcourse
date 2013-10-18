@@ -38,6 +38,10 @@ void calculateRotation(joint_t *joint) {
             GLfloat (*rp)[5] = joint->rqueue.front();
             joint->next = rp;
             joint->totalStep = joint->tqueue.front();
+            if(joint->repeat) {
+                joint->rqueue.push(rp);
+                joint->tqueue.push(joint->totalStep);
+            }
             joint->rqueue.pop();
             joint->tqueue.pop();
             joint->nowStep = 0;
@@ -65,4 +69,18 @@ void pushFullState(joint_t *joints,GLfloat (*rotations)[JOINT_LENGTH][5],
         joints[i].rqueue.push(&(*rotations)[i]);
         joints[i].tqueue.push(total);
     }
+}
+
+void repeatAll(joint_t *joints,bool rep) {
+    int i;
+    for(i=0;i<JOINT_LENGTH;++i)
+        joints[i].repeat = rep;
+}
+
+void stopAll(joint_t *joints) {
+    repeatAll(joints,false);
+    popAll(joints);
+    int i;
+    for(i=0;i<JOINT_LENGTH;++i)
+        joints[i].now = joints[i].next;
 }

@@ -35,33 +35,6 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-/*
-GLfloat rotationState[JOINT_LENGTH][5] = {
-    {0,30}, // JOINT_BODY
-    {0,25,0,0,-20}, // JOINT_HEAD
-    {-30,0,30}, // JOINT_ARM_LEFT1
-    {-30}, // JOINT_ARM_RIGHT1
-    {0,0,-30}, // JOINT_ARM_LEFT2
-    {0,0,-30}, // JOINT_ARM_RIGHT2
-    {-10}, // JOINT_LEG_LEFT1
-    {-10}, // JOINT_LEG_RIGHT1
-    {20}, // JOINT_LEG_LEFT2
-    {-20}, // JOINT_LEG_RIGHT2
-};
-
-GLfloat rotationState2[JOINT_LENGTH][5] = {
-    {},
-    {},
-    {},
-    {},
-    {-90},
-    {90},
-    {},
-    {},
-    {},
-    {},
-};*/
-
 char attackState = 0;
 
 void GLInit(void) {
@@ -110,17 +83,15 @@ void handle_keyboard(unsigned char key,int x,int y) {
             break;
         
         case '1':
-            pushFullState(joints,&aniWalkRotation1,100);
-            pushFullState(joints,&aniWalkRotation2,100);
+            pushFullState(joints,&aniWalkRotation1,50);
+            pushFullState(joints,&aniWalkRotation2,50);
+            repeatAll(joints,true);
             break;
         case '2':
-            //actionQueue.push(state3);
             attackState = 1-attackState;
             break;
         case '3':
-            pushRotation(&joints[JOINT_HEAD],&HeadRotation,100);
-            //actionQueue.push(state_walk1);
-            //actionQueue.push(state_walk2);
+            stopAll(joints);
             break;
 		case '4':
             //pushFullState(joints,&gangnam_style1,20);
