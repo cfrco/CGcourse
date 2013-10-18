@@ -54,6 +54,20 @@ void pushRotation(joint_t *joint,GLfloat (*state)[5],int total) {
     joint->tqueue.push(total);
 }
 
+void pushRotationIndex(joint_t *joint,GLfloat (*state)[5],
+                       int index[],int len,int total) {
+    int i;
+    for(i=0;i<len;++i)
+        pushRotation(joint,state+index[i],total);
+}
+
+void pushRotationList(joint_t *joint,GLfloat (*state)[5],
+                      int len,int total) {
+    int i;
+    for(i=0;i<len;++i)
+        pushRotation(joint,state+i,total);
+}
+
 void popAll(joint_t *joints) {
     int i;
     for(i=0;i<JOINT_LENGTH;++i) {

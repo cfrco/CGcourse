@@ -37,7 +37,11 @@ void jointInit(joint_t *joints,int len);
 static GLfloat initRotation[5] = {};
 void calculateRotation(joint_t *joint);
 
-void pushRotation(joint_t *joint,GLfloat (*state)[5],int totalStep);
+void pushRotation(joint_t *joint,GLfloat (*state)[5],int total);
+void pushRotationIndex(joint_t *joint,GLfloat (*state)[5],
+                       int index[],int len,int total);
+void pushRotationList(joint_t *joint,GLfloat (*state)[5],
+                      int len,int total);
 
 void popAll(joint_t *joints);
 void pushFullState(joint_t *joints,GLfloat (*rotations)[JOINT_LENGTH][5],int total);
