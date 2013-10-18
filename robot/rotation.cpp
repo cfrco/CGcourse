@@ -13,7 +13,7 @@ void jointInit(joint_t *joints,int len) {
     for(i=0;i<len;++i) {
         joints[i].now  = &initRotation; 
         joints[i].next = &initRotation; 
-        joints[i].nowStep = joints[i].totalStep = 0;
+        joints[i].nowStep = joints[i].totalStep = 1;
     }
 }
 
