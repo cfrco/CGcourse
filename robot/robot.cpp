@@ -102,6 +102,7 @@ void handle_keyboard(unsigned char key,int x,int y) {
             break;
         
         case '1':
+            clearState(joints);
             pushFullState(joints,&aniWalkRotation1,50);
             pushFullState(joints,&aniWalkRotation2,50);
             repeatAll(joints,true);
@@ -113,6 +114,7 @@ void handle_keyboard(unsigned char key,int x,int y) {
             stopAll(joints);
             break;
         case '4':
+            clearState(joints);
             Gangnam_style(joints);
             break;
     }

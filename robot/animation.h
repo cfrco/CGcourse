@@ -27,7 +27,8 @@ GLfloat aniWalkRotation2[JOINT_LENGTH][5] = {
 };
 
 GLfloat HeadRotation[5] = {30};
-////Gangnam style
+
+// Gangnam style
 GLfloat style_right_hand1[][5] = { {90, 0, 20}, {90, 0, 40} };
 GLfloat style_right_hand2[][5] = {
     {90, -90, 20}, {90, -180, 20}, {90, -270, 20},
@@ -39,7 +40,6 @@ GLfloat style_left_leg2[][5] = { {90}, {} };
 GLfloat style_right_leg1[][5] = { {90, 0, 20}, {} };
 GLfloat style_right_leg2[][5] = { {-90, 0, 20}, {} };
 
-////Gangnam style
 void Gangnam_style(joint_t *joints){
     for(int i=0;i<8;i++) {
         pushRotationList(&joints[JOINT_ARM_RIGHT1], style_right_hand1, 2, 20);

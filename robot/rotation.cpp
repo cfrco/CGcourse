@@ -68,6 +68,13 @@ void pushRotationList(joint_t *joint,GLfloat (*state)[5],
         pushRotation(joint,state+i,total);
 }
 
+void clearState(joint_t *joints) {
+    stopAll(joints);
+    int i;
+    for(i=0;i<JOINT_LENGTH;++i)
+        joints[i].now = &initRotation;
+}
+
 void popAll(joint_t *joints) {
     int i;
     for(i=0;i<JOINT_LENGTH;++i) {
