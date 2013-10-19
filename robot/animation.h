@@ -132,7 +132,7 @@ GLfloat style2_5[JOINT_LENGTH][5] = {
 
 GLfloat style2_6[JOINT_LENGTH][5] = {
     {5},
-    {10},
+    {5},
     {-40, 90, -30},
     {40, 90},
     {60},
@@ -151,19 +151,19 @@ void Gangnam_style2(joint_t *joints){
 
 	pushFullState(joints,&style2_3,60);
 	
-	pushFullState(joints,&style2_4,20);
-	pushFullState(joints,&style2_6,20);
-	pushFullState(joints,&style2_5,20);
-	pushFullState(joints,&style2_6,20);
-	pushFullState(joints,&style2_4,20);
-	pushFullState(joints,&style2_6,20);
-	pushFullState(joints,&style2_4,20);
-	pushFullState(joints,&style2_6,20);
-	pushFullState(joints,&style2_5,20);
-	pushFullState(joints,&style2_6,20);
-	pushFullState(joints,&style2_4,20);
-	pushFullState(joints,&style2_6,20);
-	pushFullState(joints,&style2_5,20);
+	pushFullState(joints,&style2_4,15);
+	pushFullState(joints,&style2_6,15);
+	pushFullState(joints,&style2_5,15);
+	pushFullState(joints,&style2_6,15);
+	pushFullState(joints,&style2_4,15);
+	pushFullState(joints,&style2_6,15);
+	pushFullState(joints,&style2_4,15);
+	pushFullState(joints,&style2_6,15);
+	pushFullState(joints,&style2_5,15);
+	pushFullState(joints,&style2_6,15);
+	pushFullState(joints,&style2_4,15);
+	pushFullState(joints,&style2_6,15);
+	pushFullState(joints,&style2_5,15);
 	pushFullState(joints,&style2_6,20);
 	pushFullState(joints,&style2_5,20);
 	pushFullState(joints,&style2_6,20);
