@@ -94,8 +94,16 @@ void handle_keyboard(unsigned char key,int x,int y) {
             stopAll(joints);
             break;
 		case '4':
-            //pushFullState(joints,&gangnam_style1,20);
 			Gangnam_style(joints);
+			break;
+		case '5':
+			pushup(joints);
+			break;
+		case '6':
+			run(joints);
+			break;
+		case '7':
+			attack1(joints);
 			break;
     }
 }
