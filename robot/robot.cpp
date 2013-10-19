@@ -56,8 +56,14 @@ void handle_menu(int menu) {
     switch(menu) {
         // Main
         case ME_WALK :
+            clearState(joints);
             pushFullState(joints,&aniWalkRotation1,50);
             pushFullState(joints,&aniWalkRotation2,50);
+            repeatAll(joints,true);
+        break;
+        case ME_RUN :
+            clearState(joints);
+            run(joints);
             repeatAll(joints,true);
         break;
 
@@ -66,6 +72,18 @@ void handle_menu(int menu) {
         // View
         case ME_VIEW_SOLID : glPolygonMode(GL_FRONT_AND_BACK,GL_FILL); break;
         case ME_VIEW_LINE  : glPolygonMode(GL_FRONT_AND_BACK,GL_LINE); break;
+
+        // Dance
+        case ME_DANCE_GANSTYLE1 :
+            clearState(joints);
+            Gangnam_style(joints);
+            repeatAll(joints,true);
+        break;
+        case ME_DANCE_GANSTYLE2 :
+            clearState(joints);
+            Gangnam_style2(joints);
+            repeatAll(joints,true);
+        break;
     } 
 }
 
@@ -118,26 +136,26 @@ void handle_keyboard(unsigned char key,int x,int y) {
             Gangnam_style(joints);
             repeatAll(joints,true);
             break;
-		case '5':
+        case '5':
             clearState(joints);
-			pushup(joints);
+            pushup(joints);
             repeatAll(joints,true);
-			break;
-		case '6':
+            break;
+        case '6':
             clearState(joints);
-			run(joints);
+            run(joints);
             repeatAll(joints,true);
-			break;
-		case '7':
+            break;
+        case '7':
             clearState(joints);
-			attack1(joints);
+            attack1(joints);
             repeatAll(joints,true);
-			break;
-		case '8':
+            break;
+        case '8':
             clearState(joints);
-			Gangnam_style2(joints);
+            Gangnam_style2(joints);
             repeatAll(joints,true);
-			break;
+            break;
     }
 }
 
@@ -289,38 +307,20 @@ void drawRobotArm(float factor) {
     
     if(attackState) {
         glPushMatrix();
-        //glScalef(0.12f,0.12f,0.12f);
-		glRotatef(90,1,0,0);
+        glRotatef(90,1,0,0);
         glutSolidCone(0.3f,1.0f,10,10);
         glPopMatrix();
 	
-		glColor3f(1, 1, 0);
-		glPushMatrix();
-		glRotatef(45, 1, 0, 0);
-		glScalef(0.5, 0.5, 0.5);
-		glutSolidCone(0.3f, 1.0f, 10, 10);
-		glPopMatrix();
-
-		glPushMatrix();
-		glRotatef(90, 0, 1, 0);
-		glRotatef(45, 1, 0, 0);
-		glScalef(0.5, 0.5, 0.5);
-		glutSolidCone(0.3f, 1.0f, 10, 10);
-		glPopMatrix();
-
-		glPushMatrix();
-		glRotatef(180, 0, 1, 0);
-		glRotatef(45, 1, 0, 0);
-		glScalef(0.5, 0.5, 0.5);
-		glutSolidCone(0.3f, 1.0f, 10, 10);
-		glPopMatrix();
-
-		glPushMatrix();
-		glRotatef(270, 0, 1, 0);
-		glRotatef(45, 1, 0, 0);
-		glScalef(0.5, 0.5, 0.5);
-		glutSolidCone(0.3f, 1.0f, 10, 10);
-		glPopMatrix();
+        glColor3f(1, 1, 0);
+        int ang;
+        for(ang=0;ang<=270;ang+=90) {
+            glRotatef(ang, 0, 1, 0);
+            glPushMatrix();
+            glRotatef(45, 1, 0, 0);
+            glScalef(0.5, 0.5, 0.5);
+            glutSolidCone(0.3f, 1.0f, 10, 10);
+            glPopMatrix();
+        }
     }
 
     glPopMatrix();
