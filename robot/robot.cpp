@@ -5,6 +5,7 @@
 
 #include"catGL.h"
 #include"rotation.h"
+#include"state.h"
 #include"animation.h"
 #include"menu.h"
 
@@ -19,6 +20,7 @@ void handle_timer(int value);
 float fangle = 0;
 float pos_x = 0,pos_y = 5,pos_z = 10;
 joint_t joints[JOINT_LENGTH];
+//char states[STATE_LENGTH] = {};
 
 int main(int argc, char *argv[]) {
     CGL_INIT_WINDOW(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH,
@@ -38,7 +40,7 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-char attackState = 0;
+//char attackState = 0;
 
 void GLInit(void) {
     glClearColor(0.0f,0.0f,0.0f,1.0f);
@@ -126,7 +128,10 @@ void handle_keyboard(unsigned char key,int x,int y) {
             repeatAll(joints,true);
             break;
         case '2':
-            attackState = 1-attackState;
+            popAllState();
+            if(nowState != &stateAttack) pushState(&stateAttack,10);
+            else pushState(&stateInit,10);
+            stateRepeat = true;
             break;
         case '3':
             stopAll(joints);
@@ -156,7 +161,12 @@ void handle_keyboard(unsigned char key,int x,int y) {
             Gangnam_style2(joints);
             repeatAll(joints,true);
             break;
-		case '9':
+        case '9':
+            clearState(joints);
+            super_mode(joints);
+            repeatAll(joints,true);
+            break;
+		case '0':
 			clearState(joints);
 			attack2(joints);
 			repeatAll(joints,true);
@@ -169,6 +179,7 @@ void handle_timer(int value) {
     for(i=0;i<JOINT_LENGTH;++i)
         calculateRotation(&joints[i]);
 
+    getNowState();
     glutTimerFunc(10,handle_timer,0);
 }
 
@@ -310,7 +321,7 @@ void drawRobotArm(float factor) {
     glutSolidSphere(2.0f,10,10);
     glPopMatrix();
     
-    if(attackState) {
+    if((*nowState)[STATE_ATTACK_CONE]) {
         glPushMatrix();
         glRotatef(90,1,0,0);
         glutSolidCone(0.3f,1.0f,10,10);

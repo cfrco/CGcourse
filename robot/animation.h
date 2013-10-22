@@ -302,3 +302,21 @@ void attack2(joint_t *joints) {
     pushFullState(joints,&attack2_rotation3,20);
     pushFullState(joints,&attack2_rotation3,100);
 }
+
+// SuperMode
+GLfloat super_rotation[JOINT_LENGTH][5] = {
+    {},
+    {},
+    {0, 0, 80},
+    {0, 0, 80},
+    {0, 0, 30},
+    {0, 0, 30},
+    {0, 0, 10},
+    {0, 0, 10},
+    {},
+    {},
+};
+
+void super_mode(joint_t *joints) {
+    pushFullState(joints,&super_rotation,100);
+}
