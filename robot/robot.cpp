@@ -297,7 +297,7 @@ void drawRobotArm(float factor) {
     glScalef(1,2.2f,1);
     glutSolidCube(0.4f);
     glPopMatrix();
-
+	
     // Joint2
     glColor3f(0.1f,0.1f,0.1f);
     glTranslatef(0.15f,-0.45f,0);

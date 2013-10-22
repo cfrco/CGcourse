@@ -20,6 +20,7 @@ void getNowState();
 
 static char stateInit[STATE_LENGTH] = {};
 static char stateAttack[STATE_LENGTH] = {1};
+static char stateFire[STATE_LENGTH] = {0, 0, 1};
 extern char (*nowState)[STATE_LENGTH];
 
 #endif
