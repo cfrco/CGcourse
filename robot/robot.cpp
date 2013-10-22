@@ -156,6 +156,11 @@ void handle_keyboard(unsigned char key,int x,int y) {
             Gangnam_style2(joints);
             repeatAll(joints,true);
             break;
+		case '9':
+			clearState(joints);
+			attack2(joints);
+			repeatAll(joints,true);
+			break;
     }
 }
 

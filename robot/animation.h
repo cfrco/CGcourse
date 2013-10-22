@@ -254,3 +254,51 @@ void attack1(joint_t *joints) {
     pushFullState(joints,&attack1_rotation1,10);
     pushFullState(joints,&attack1_rotation2,10);
 }
+
+GLfloat attack2_rotation1[JOINT_LENGTH][5] = {
+    {-2},
+    {-2},
+    {-90, 0, -40},
+    {90, 0, -20},
+    {0, 0, -50},
+    {},
+    {30},
+    {60},
+    {45},
+    {-45}
+};
+
+GLfloat attack2_rotation2[JOINT_LENGTH][5] = {
+    {2},
+    {2},
+    {-90, 0, -35},
+    {90, 0, -20},
+    {0, 0, -50},
+    {0, 360},
+    {-60},
+    {-30},
+    {45},
+    {-45}
+};
+
+GLfloat attack2_rotation3[JOINT_LENGTH][5] = {
+    {-20},
+    {-2},
+    {-45, 0, 20},
+    {130, 0, -20},
+    {0, 0, -50},
+    {},
+    {20, 0, 10},
+    {-20, 0, 10},
+    {0, 0, -10},
+    {0, 0, -10}
+};
+
+void attack2(joint_t *joints) {
+    for(int i = 0;i < 4;i++){
+		pushFullState(joints,&attack2_rotation1,15);
+    	pushFullState(joints,&attack2_rotation2,15);
+	}
+    pushFullState(joints,&attack2_rotation3,20);
+    pushFullState(joints,&attack2_rotation3,100);
+}
