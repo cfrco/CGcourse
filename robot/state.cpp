@@ -39,4 +39,5 @@ void getNowState() {
             nowState = nstate;
         }
     }
+    nowStep++;
 }

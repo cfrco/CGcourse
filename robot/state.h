@@ -5,6 +5,8 @@
 
 enum Sate {
     STATE_ATTACK_CONE,
+    STATE_BACKGROUND,
+    STATE_BODY_CONE,
     STATE_LENGTH
 };
 

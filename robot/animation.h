@@ -256,19 +256,22 @@ void attack1(joint_t *joints) {
 }
 
 // SuperMode
+char super_state1[STATE_LENGTH] = {0,0};
+char super_state2[STATE_LENGTH] = {0,1};
+char super_cone_state[STATE_LENGTH] = {};
 GLfloat super_rotation[JOINT_LENGTH][5] = {
     {},
     {},
     {0, 0, 80},
     {0, 0, 80},
+    {0, 0, 15},
+    {0, 0, 15},
     {0, 0, 30},
     {0, 0, 30},
-    {0, 0, 10},
-    {0, 0, 10},
     {},
     {},
 };
 
 void super_mode(joint_t *joints) {
-    pushFullState(joints,&super_rotation,100);
+    pushFullState(joints,&super_rotation,50);
 }
