@@ -162,6 +162,11 @@ void handle_keyboard(unsigned char key,int x,int y) {
             repeatAll(joints,true);
             break;
         case '9':
+            popAllState();
+            pushState(&super_state2,10);
+            pushState(&super_state1,10);
+            stateRepeat = true;
+
             clearState(joints);
             super_mode(joints);
             repeatAll(joints,true);
@@ -426,7 +431,16 @@ void drawRobot() {
     glPopMatrix();
 }
 
+void background_color() {
+    if((*nowState)[STATE_BACKGROUND] == 0) {
+        glClearColor(0.0f,0.0f,0.0f,1.0f);
+    } else {
+        glClearColor(1.0f,1.0f,1.0f,1.0f);
+    }
+}
+
 void handle_draw() {
+    background_color();
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
     
