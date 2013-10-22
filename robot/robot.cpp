@@ -20,7 +20,6 @@ void handle_timer(int value);
 float fangle = 0;
 float pos_x = 0,pos_y = 5,pos_z = 10;
 joint_t joints[JOINT_LENGTH];
-//char states[STATE_LENGTH] = {};
 
 int main(int argc, char *argv[]) {
     CGL_INIT_WINDOW(GLUT_RGBA|GLUT_DOUBLE|GLUT_DEPTH,
@@ -52,6 +51,10 @@ void GLInit(void) {
 
     glDepthFunc(GL_LESS);
     glEnable(GL_DEPTH_TEST);
+    
+    // Blending
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void handle_menu(int menu) {
@@ -99,6 +102,8 @@ void handle_reshape(int w,int h) {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
+
+void drawBodyCone(int mod);
 
 void handle_keyboard(unsigned char key,int x,int y) {
     switch(key) {
@@ -166,10 +171,11 @@ void handle_keyboard(unsigned char key,int x,int y) {
             pushState(&super_state2,10);
             pushState(&super_state1,10);
             stateRepeat = true;
+            drawBodyCone(0);
 
             clearState(joints);
             super_mode(joints);
-            repeatAll(joints,true);
+            joints[JOINT_BODY].repeat = true;
             break;
 		case '0':
 			clearState(joints);
@@ -244,6 +250,29 @@ void drawRobotHead() {
     glPopMatrix();
 }
 
+// mod = 0 do init
+void drawBodyCone(int mod) {
+    static float size = 0;
+    static float cysize = 0;
+    if(mod == 0) {
+        size = 0; 
+        cysize = 0;
+    } else {
+        glPushMatrix();
+        glutSolidCone(0.7f,size,20,5);
+
+        if(size < 2.0f) size += 0.05f;
+        else {
+            glColor4f(0.9f,0.9f,0.2f,0.8f);
+            glTranslatef(0,0,1.0f);
+            glutSolidCylinder(cysize,10,20,30); 
+            if(cysize < 0.7f) cysize += 0.05f;
+        }
+                 
+        glPopMatrix();
+    }
+}
+
 void drawRobotBody() {
     glPushMatrix();
 
@@ -261,6 +290,9 @@ void drawRobotBody() {
     glScalef(0.5f,2.0f,0.5f);
     glutSolidCube(0.4f);
     glPopMatrix();
+    
+    if((*nowState)[STATE_BODY_CONE])
+        drawBodyCone(1);
     
     glPopMatrix();
 }
@@ -438,6 +470,7 @@ void background_color() {
         glClearColor(1.0f,1.0f,1.0f,1.0f);
     }
 }
+
 
 void handle_draw() {
     background_color();

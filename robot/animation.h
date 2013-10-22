@@ -304,11 +304,11 @@ void attack2(joint_t *joints) {
 }
 
 // SuperMode
-char super_state1[STATE_LENGTH] = {0,0};
-char super_state2[STATE_LENGTH] = {0,1};
+char super_state1[STATE_LENGTH] = {0,0,1};
+char super_state2[STATE_LENGTH] = {0,1,1};
 char super_cone_state[STATE_LENGTH] = {};
 GLfloat super_rotation[JOINT_LENGTH][5] = {
-    {},
+    {0, 0, 180},
     {},
     {0, 0, 80},
     {0, 0, 80},
@@ -319,7 +319,10 @@ GLfloat super_rotation[JOINT_LENGTH][5] = {
     {},
     {},
 };
+GLfloat super_body_rotation[][5] = { {0, 0, 360},{0, 0, 0} };
 
 void super_mode(joint_t *joints) {
     pushFullState(joints,&super_rotation,50);
+    pushRotation(&joints[JOINT_BODY],&(super_body_rotation[0]),50);
+    pushRotation(&joints[JOINT_BODY],&(super_body_rotation[1]),0);
 }
