@@ -274,7 +274,7 @@ GLfloat super_rotation[JOINT_LENGTH][5] = {
 GLfloat super_body_rotation[][5] = { {0, 0, 360},{0, 0, 0} };
 
 void super_mode(joint_t *joints) {
-    pushFullState(joints,&super_rotation,50);
-    pushRotation(&joints[JOINT_BODY],&(super_body_rotation[0]),50);
+    pushFullState(joints,&super_rotation,25);
+    pushRotation(&joints[JOINT_BODY],&(super_body_rotation[0]),25);
     pushRotation(&joints[JOINT_BODY],&(super_body_rotation[1]),0);
 }

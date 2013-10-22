@@ -16,6 +16,8 @@ void handle_draw(void);
 void handle_keyboard(unsigned char key,int x,int y);
 void handle_timer(int value);
 
+void drawBodyCone(int mod);
+
 // parameters
 float fangle = 0;
 float pos_x = 0,pos_y = 5,pos_z = 10;
@@ -59,6 +61,12 @@ void GLInit(void) {
 
 void handle_menu(int menu) {
     switch(menu) {
+        case ME_EXIT : exit(0); break;
+        
+        // View
+        case ME_VIEW_SOLID : glPolygonMode(GL_FRONT_AND_BACK,GL_FILL); break;
+        case ME_VIEW_LINE  : glPolygonMode(GL_FRONT_AND_BACK,GL_LINE); break;
+
         // Main
         case ME_WALK :
             clearState(joints);
@@ -67,27 +75,59 @@ void handle_menu(int menu) {
             repeatAll(joints,true);
         break;
         case ME_RUN :
+            popAllState();
             clearState(joints);
             run(joints);
             repeatAll(joints,true);
         break;
 
-        case ME_EXIT : exit(0); break;
-        
-        // View
-        case ME_VIEW_SOLID : glPolygonMode(GL_FRONT_AND_BACK,GL_FILL); break;
-        case ME_VIEW_LINE  : glPolygonMode(GL_FRONT_AND_BACK,GL_LINE); break;
-
         // Dance
         case ME_DANCE_GANSTYLE1 :
+            popAllState();
             clearState(joints);
             Gangnam_style(joints);
             repeatAll(joints,true);
         break;
         case ME_DANCE_GANSTYLE2 :
+            popAllState();
             clearState(joints);
             Gangnam_style2(joints);
             repeatAll(joints,true);
+        break;
+        
+        // Action
+        case ME_ACTION_PUSHUP :
+            popAllState();
+            clearState(joints);
+            pushup(joints);
+            repeatAll(joints,true);
+        break;
+        case ME_ACTION_ATTACK1 :
+            popAllState();
+            clearState(joints);
+            attack1(joints);
+            repeatAll(joints,true);
+        break;
+        case ME_ACTION_SUPER :
+            popAllState();
+            pushState(&super_state2,10);
+            pushState(&super_state1,10);
+            stateRepeat = true;
+            drawBodyCone(0);
+
+            clearState(joints);
+            super_mode(joints);
+            joints[JOINT_BODY].repeat = true;
+        break;
+
+        // Equipment
+        case ME_EQU_CONE :
+            if(nowState != &stateAttack) {
+                popAllState();
+                pushState(&stateAttack,10);
+            }
+            else popAllState();
+            stateRepeat = true;
         break;
     } 
 }
@@ -103,7 +143,6 @@ void handle_reshape(int w,int h) {
     glLoadIdentity();
 }
 
-void drawBodyCone(int mod);
 
 void handle_keyboard(unsigned char key,int x,int y) {
     switch(key) {
@@ -125,57 +164,8 @@ void handle_keyboard(unsigned char key,int x,int y) {
             pos_y = 5;
             pos_z = 10;
             break;
-        
-        case '1':
-            clearState(joints);
-            pushFullState(joints,&aniWalkRotation1,50);
-            pushFullState(joints,&aniWalkRotation2,50);
-            repeatAll(joints,true);
-            break;
-        case '2':
-            popAllState();
-            if(nowState != &stateAttack) pushState(&stateAttack,10);
-            else pushState(&stateInit,10);
-            stateRepeat = true;
-            break;
         case '3':
             stopAll(joints);
-            break;
-        case '4':
-            clearState(joints);
-            Gangnam_style(joints);
-            repeatAll(joints,true);
-            break;
-        case '5':
-            clearState(joints);
-            pushup(joints);
-            repeatAll(joints,true);
-            break;
-        case '6':
-            clearState(joints);
-            run(joints);
-            repeatAll(joints,true);
-            break;
-        case '7':
-            clearState(joints);
-            attack1(joints);
-            repeatAll(joints,true);
-            break;
-        case '8':
-            clearState(joints);
-            Gangnam_style2(joints);
-            repeatAll(joints,true);
-            break;
-        case '9':
-            popAllState();
-            pushState(&super_state2,10);
-            pushState(&super_state1,10);
-            stateRepeat = true;
-            drawBodyCone(0);
-
-            clearState(joints);
-            super_mode(joints);
-            joints[JOINT_BODY].repeat = true;
             break;
     }
 }
@@ -261,7 +251,7 @@ void drawBodyCone(int mod) {
             glColor4f(0.9f,0.9f,0.2f,0.8f);
             glTranslatef(0,0,1.0f);
             glutSolidCylinder(cysize,10,20,30); 
-            if(cysize < 0.7f) cysize += 0.05f;
+            if(cysize < 0.7f) cysize += 0.07f;
         }
                  
         glPopMatrix();
