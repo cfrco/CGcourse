@@ -2,6 +2,7 @@
 #include<GL/freeglut.h>
 
 #include<queue>
+#include<iostream>
 
 #include"catGL.h"
 #include"rotation.h"
@@ -9,12 +10,18 @@
 #include"animation.h"
 #include"menu.h"
 
+
 void GLInit(void);
 void GLMenu(void);
 void handle_reshape(int w,int h);
 void handle_draw(void);
 void handle_keyboard(unsigned char key,int x,int y);
 void handle_timer(int value);
+
+void drawBodyCone(int mod);
+void drawCone();
+float MoveCone(int s);
+void drawBall(int s);
 
 // parameters
 float fangle = 0;
@@ -59,6 +66,12 @@ void GLInit(void) {
 
 void handle_menu(int menu) {
     switch(menu) {
+        case ME_EXIT : exit(0); break;
+        
+        // View
+        case ME_VIEW_SOLID : glPolygonMode(GL_FRONT_AND_BACK,GL_FILL); break;
+        case ME_VIEW_LINE  : glPolygonMode(GL_FRONT_AND_BACK,GL_LINE); break;
+
         // Main
         case ME_WALK :
             clearState(joints);
@@ -67,27 +80,59 @@ void handle_menu(int menu) {
             repeatAll(joints,true);
         break;
         case ME_RUN :
+            popAllState();
             clearState(joints);
             run(joints);
             repeatAll(joints,true);
         break;
 
-        case ME_EXIT : exit(0); break;
-        
-        // View
-        case ME_VIEW_SOLID : glPolygonMode(GL_FRONT_AND_BACK,GL_FILL); break;
-        case ME_VIEW_LINE  : glPolygonMode(GL_FRONT_AND_BACK,GL_LINE); break;
-
         // Dance
         case ME_DANCE_GANSTYLE1 :
+            popAllState();
             clearState(joints);
             Gangnam_style(joints);
             repeatAll(joints,true);
         break;
         case ME_DANCE_GANSTYLE2 :
+            popAllState();
             clearState(joints);
             Gangnam_style2(joints);
             repeatAll(joints,true);
+        break;
+        
+        // Action
+        case ME_ACTION_PUSHUP :
+            popAllState();
+            clearState(joints);
+            pushup(joints);
+            repeatAll(joints,true);
+        break;
+        case ME_ACTION_ATTACK1 :
+            popAllState();
+            clearState(joints);
+            attack1(joints);
+            repeatAll(joints,true);
+        break;
+        case ME_ACTION_SUPER :
+            popAllState();
+            pushState(&super_state2,10);
+            pushState(&super_state1,10);
+            stateRepeat = true;
+            drawBodyCone(0);
+
+            clearState(joints);
+            super_mode(joints);
+            joints[JOINT_BODY].repeat = true;
+        break;
+
+        // Equipment
+        case ME_EQU_CONE :
+            if(nowState != &stateAttack) {
+                popAllState();
+                pushState(&stateAttack,10);
+            }
+            else popAllState();
+            stateRepeat = true;
         break;
     } 
 }
@@ -103,7 +148,6 @@ void handle_reshape(int w,int h) {
     glLoadIdentity();
 }
 
-void drawBodyCone(int mod);
 
 void handle_keyboard(unsigned char key,int x,int y) {
     switch(key) {
@@ -125,19 +169,6 @@ void handle_keyboard(unsigned char key,int x,int y) {
             pos_y = 5;
             pos_z = 10;
             break;
-        
-        case '1':
-            clearState(joints);
-            pushFullState(joints,&aniWalkRotation1,50);
-            pushFullState(joints,&aniWalkRotation2,50);
-            repeatAll(joints,true);
-            break;
-        case '2':
-            popAllState();
-            if(nowState != &stateAttack) pushState(&stateAttack,10);
-            else pushState(&stateInit,10);
-            stateRepeat = true;
-            break;
         case '3':
             stopAll(joints);
             break;
@@ -158,6 +189,9 @@ void handle_keyboard(unsigned char key,int x,int y) {
             break;
         case '7':
             clearState(joints);
+			pushState(&stateFire, 10);
+            stateRepeat = true;
+            clearState(joints);
             attack1(joints);
             repeatAll(joints,true);
             break;
@@ -168,6 +202,9 @@ void handle_keyboard(unsigned char key,int x,int y) {
             break;
         case '9':
             popAllState();
+			pushState(&stateFire, 10);
+            stateRepeat = true;
+            clearState(joints);
             pushState(&super_state2,10);
             pushState(&super_state1,10);
             stateRepeat = true;
@@ -178,10 +215,24 @@ void handle_keyboard(unsigned char key,int x,int y) {
             joints[JOINT_BODY].repeat = true;
             break;
 		case '0':
+            popAllState();
+			pushState(&stateRunFire, 10);
+			MoveCone(0);
+            stateRepeat = true;
 			clearState(joints);
 			attack2(joints);
 			repeatAll(joints,true);
 			break;
+		case '-':
+            popAllState();
+			pushState(&stateFireBall, 240);
+			pushState(&stateAttack, 20);
+            stateRepeat = true;
+			drawBall(0);
+			clearState(joints);
+			attack3(joints);
+			repeatAll(joints,true);
+			break;	
     }
 }
 
@@ -266,7 +317,7 @@ void drawBodyCone(int mod) {
             glColor4f(0.9f,0.9f,0.2f,0.8f);
             glTranslatef(0,0,1.0f);
             glutSolidCylinder(cysize,10,20,30); 
-            if(cysize < 0.7f) cysize += 0.05f;
+            if(cysize < 0.7f) cysize += 0.07f;
         }
                  
         glPopMatrix();
@@ -298,7 +349,7 @@ void drawRobotBody() {
 }
 
 void drawRobotArm(float factor) {
-    glPushMatrix();
+	glPushMatrix();
     glRotatef(factor,0,1,0);
     glTranslatef(0.9f,2.0f,0); 
 
@@ -341,40 +392,43 @@ void drawRobotArm(float factor) {
     // Joint2 rotation
     if(factor>=0) DoRotate(joints[JOINT_ARM_LEFT2].rotation);
     else DoRotate(joints[JOINT_ARM_RIGHT2].rotation);
+  
+   	// Lower
+   	glColor3f(0.1f,0.2f,0.8f);
+   	glTranslatef(0.03f,-0.5f,0); 
+   	glPushMatrix();
+   	glScalef(1,2.2f,1);
+   	glutSolidCube(0.4f);
+   	glPopMatrix();
+
+   	// Hand
+   	glColor3f(0,0.2f,0.8f);
+   	glTranslatef(0.02f,-0.59f,0);
+   	glPushMatrix();
+   	glScalef(0.12f,0.12f,0.12f);
+   	glutSolidSphere(2.0f,10,10);
+   	glPopMatrix();
     
-    // Lower
-    glColor3f(0.1f,0.2f,0.8f);
-    glTranslatef(0.03f,-0.5f,0); 
-    glPushMatrix();
-    glScalef(1,2.2f,1);
-    glutSolidCube(0.4f);
-    glPopMatrix();
-    
-    // Hand
-    glColor3f(0,0.2f,0.8f);
-    glTranslatef(0.02f,-0.59f,0);
-    glPushMatrix();
-    glScalef(0.12f,0.12f,0.12f);
-    glutSolidSphere(2.0f,10,10);
-    glPopMatrix();
-    
-    if((*nowState)[STATE_ATTACK_CONE]) {
-        glPushMatrix();
-        glRotatef(90,1,0,0);
-        glutSolidCone(0.3f,1.0f,10,10);
-        glPopMatrix();
+	if((*nowState)[STATE_ATTACK_CONE]) 
+    	drawCone();
+
+    if((*nowState)[STATE_FIRE]){
+		glPushMatrix();
+		glTranslatef(0, -MoveCone(40), 0);
+    	drawCone();
+		glPopMatrix();
+	}
 	
-        glColor3f(1, 1, 0);
-        int ang;
-        for(ang=0;ang<=270;ang+=90) {
-            glRotatef(ang, 0, 1, 0);
-            glPushMatrix();
-            glRotatef(45, 1, 0, 0);
-            glScalef(0.5, 0.5, 0.5);
-            glutSolidCone(0.3f, 1.0f, 10, 10);
-            glPopMatrix();
-        }
-    }
+    if((*nowState)[STATE_RUN_FIRE] && factor == -180.0f){
+		glPushMatrix();
+		glTranslatef(0, -MoveCone(20), 0);
+    	drawCone();
+		glPopMatrix();
+	}
+
+    if((*nowState)[STATE_FIRE_BALL] && factor == -180.0f){
+		drawBall(240);
+	}
 
     glPopMatrix();
 }
@@ -471,7 +525,6 @@ void background_color() {
     }
 }
 
-
 void handle_draw() {
     background_color();
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
@@ -488,4 +541,66 @@ void handle_draw() {
     glPopMatrix(); // pop global rotation
 
     glutSwapBuffers();
+}
+
+void drawCone(){
+   	glColor3f(0,0.2f,0.8f);
+	glPushMatrix();
+	glRotatef(90,1,0,0);
+	glutSolidCone(0.3f,1.0f,10,10);
+	glPopMatrix();
+	
+	glColor3f(1, 1, 0);
+	int ang;
+	for(ang=0;ang<=270;ang+=90) {
+	    glRotatef(ang, 0, 1, 0);
+	    glPushMatrix();
+	    glRotatef(45, 1, 0, 0);
+	    glScalef(0.5, 0.5, 0.5);
+	    glutSolidCone(0.3f, 1.0f, 10, 10);
+	    glPopMatrix();
+	}
+}
+
+float MoveCone(int s){
+	static float move_amt;
+	static int count;
+	//initialize
+	if(s == 0 || count >= s){
+		count = 0;
+	    move_amt = 0.0f;
+	}
+	else{	
+		count++;
+		move_amt += 0.2f;
+	}
+	return move_amt;
+}
+
+void drawBall(int s){
+	static float size;
+	static int count;
+	static float sht_amt;
+	if(s == 0 || count >= s){
+		count = 0;
+		size = 0.1f;
+		sht_amt = 0.0f;
+	}
+	else{
+		count++;
+		glPushMatrix();
+			
+		if(count >= s - 15){
+			sht_amt += 1.0f;
+			glTranslatef(1.4 * size, -1.4, sht_amt);
+		}
+		else{
+			size += 0.01f;
+			glTranslatef(1.4 * size, -1.4, 0);
+		}
+		glColor3f(1, 0, 0);
+		glutSolidSphere(size, 30.0, 30.0);
+		glPopMatrix();
+	}
+	
 }

@@ -17,6 +17,7 @@ void popAllState() {
     while(!stateQueue.empty()) stateQueue.pop();
     while(!stateTotalQueue.empty()) stateTotalQueue.pop();
     totalStep = nowStep = 1;
+    nowState = &stateInit;
     stateRepeat = false;
 }
 

@@ -229,8 +229,8 @@ GLfloat attack1_rotation1[JOINT_LENGTH][5] = {
     {0, 1},
     {-45, 0, -20},
     {45, 0, -20},
-    {-90, 0},
-    {90, 0},
+    {-80, 0},
+    {80, 0},
     {0, 0, 30},
     {0, 0, 30},
     {0, 0, -20},
@@ -242,8 +242,8 @@ GLfloat attack1_rotation2[JOINT_LENGTH][5] = {
     {0, -1},
     {-45, 0, -20},
     {45, 0, -20},
-    {-90, 360},
-    {90, 360},
+    {-80, 360},
+    {80, 360},
     {0, 0, 30},
     {0, 0, 30},
     {0, 0, -20},
@@ -259,7 +259,7 @@ GLfloat attack2_rotation1[JOINT_LENGTH][5] = {
     {-2},
     {-2},
     {-90, 0, -40},
-    {90, 0, -20},
+    {90, 0, -10},
     {0, 0, -50},
     {},
     {30},
@@ -272,7 +272,7 @@ GLfloat attack2_rotation2[JOINT_LENGTH][5] = {
     {2},
     {2},
     {-90, 0, -35},
-    {90, 0, -20},
+    {90, 0, -10},
     {0, 0, -50},
     {0, 360},
     {-60},
@@ -281,26 +281,55 @@ GLfloat attack2_rotation2[JOINT_LENGTH][5] = {
     {-45}
 };
 
-GLfloat attack2_rotation3[JOINT_LENGTH][5] = {
-    {-20},
-    {-2},
-    {-45, 0, 20},
-    {130, 0, -20},
-    {0, 0, -50},
-    {},
-    {20, 0, 10},
-    {-20, 0, 10},
+void attack2(joint_t *joints) {
+	pushFullState(joints,&attack2_rotation1,15);
+    pushFullState(joints,&attack2_rotation2,15);
+}
+
+GLfloat attack3_rotation1[JOINT_LENGTH][5] = {
+    {10},
+    {10},
+    {-40, 0, -10},
+    {40, 0, -10},
+    {0, 0, -10},
+    {0, 0, -10},
+    {-12, 0, 10},
+    {12, 0, 10},
     {0, 0, -10},
     {0, 0, -10}
 };
 
-void attack2(joint_t *joints) {
-    for(int i = 0;i < 4;i++){
-		pushFullState(joints,&attack2_rotation1,15);
-    	pushFullState(joints,&attack2_rotation2,15);
-	}
-    pushFullState(joints,&attack2_rotation3,20);
-    pushFullState(joints,&attack2_rotation3,100);
+GLfloat attack3_rotation2[JOINT_LENGTH][5] = {
+    {-10},
+    {-10},
+    {-160, 0, 30},
+    {160, 0, 30},
+    {},
+    {},
+    {12, 0, 10},
+    {-12, 0, 10},
+    {0, 0, -10},
+    {0, 0, -10}
+};
+
+GLfloat attack3_rotation3[JOINT_LENGTH][5] = {
+    {30},
+    {15},
+    {-10, 0, 30},
+    {10, 0, 30},
+    {},
+    {},
+    {-20, 0, 20},
+    {60, 0, 20},
+    {20, 0, -20},
+    {-40, 0, -20}
+};
+
+void attack3(joint_t *joints) {
+    pushFullState(joints,&attack3_rotation1,20);
+    pushFullState(joints,&attack3_rotation2,200);
+    pushFullState(joints,&attack3_rotation3,20);
+    pushFullState(joints,&attack3_rotation3,20);
 }
 
 // SuperMode
@@ -322,7 +351,7 @@ GLfloat super_rotation[JOINT_LENGTH][5] = {
 GLfloat super_body_rotation[][5] = { {0, 0, 360},{0, 0, 0} };
 
 void super_mode(joint_t *joints) {
-    pushFullState(joints,&super_rotation,50);
-    pushRotation(&joints[JOINT_BODY],&(super_body_rotation[0]),50);
+    pushFullState(joints,&super_rotation,25);
+    pushRotation(&joints[JOINT_BODY],&(super_body_rotation[0]),25);
     pushRotation(&joints[JOINT_BODY],&(super_body_rotation[1]),0);
 }
