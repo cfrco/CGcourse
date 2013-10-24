@@ -7,14 +7,12 @@ enum Sate {
     STATE_ATTACK_CONE,
     STATE_BACKGROUND,
     STATE_BODY_CONE,
-	STATE_FIRE,
-	STATE_RUN_FIRE,
-	STATE_FIRE_BALL,
+    STATE_FIRE,
+    STATE_RUN_FIRE,
+    STATE_FIRE_BALL,
     STATE_LENGTH
 };
 
-//extern std::queue<char (*)[STATE_LENGTH]> stateQueue;
-//extern std::queue<int> stateTotalQueue;
 extern bool stateRepeat;
 
 void pushState(char (*state)[STATE_LENGTH],int total);

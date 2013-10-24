@@ -255,6 +255,7 @@ void attack1(joint_t *joints) {
     pushFullState(joints,&attack1_rotation2,10);
 }
 
+// attack2
 GLfloat attack2_rotation1[JOINT_LENGTH][5] = {
     {-2},
     {-2},
@@ -282,10 +283,11 @@ GLfloat attack2_rotation2[JOINT_LENGTH][5] = {
 };
 
 void attack2(joint_t *joints) {
-	pushFullState(joints,&attack2_rotation1,15);
+    pushFullState(joints,&attack2_rotation1,15);
     pushFullState(joints,&attack2_rotation2,15);
 }
 
+// attack 3
 GLfloat attack3_rotation1[JOINT_LENGTH][5] = {
     {10},
     {10},
