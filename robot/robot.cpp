@@ -108,9 +108,30 @@ void handle_menu(int menu) {
             repeatAll(joints,true);
         break;
         case ME_ACTION_ATTACK1 :
-            popAllState();
-            clearState(joints);
+            popAllState(); //state
+            pushState(&stateFire, 10);
+            stateRepeat = true;
+            clearState(joints); //rotation
             attack1(joints);
+            repeatAll(joints,true);
+        break;
+        case ME_ACTION_ATTACK2 :
+            popAllState(); //state
+            pushState(&stateFireBall, 240);
+            pushState(&stateAttack, 20);
+            stateRepeat = true;
+            drawBall(0); // animation init
+            clearState(joints); // rotation
+            attack3(joints);
+            repeatAll(joints,true);
+        break;	
+        case ME_ACTION_ATTACK3 :
+            popAllState(); //state
+            pushState(&stateRunFire, 10);
+            stateRepeat = true;
+            MoveCone(0); // animation init
+            clearState(joints); //rotation
+            attack2(joints);
             repeatAll(joints,true);
         break;
         case ME_ACTION_SUPER :

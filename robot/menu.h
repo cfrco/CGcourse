@@ -11,6 +11,8 @@ enum MenuEntry {
     ME_DANCE_GANSTYLE2,
     ME_ACTION_PUSHUP,
     ME_ACTION_ATTACK1,
+    ME_ACTION_ATTACK2,
+    ME_ACTION_ATTACK3,
     ME_ACTION_SUPER,
     ME_EQU_CONE,
 };
@@ -44,7 +46,9 @@ static void GLMenu() {
 
     glutSetMenu(menu_action);
     glutAddMenuEntry("Push Up",ME_ACTION_PUSHUP);
-    glutAddMenuEntry("AttackMode",ME_ACTION_ATTACK1);
+    glutAddMenuEntry("AttackMode 1",ME_ACTION_ATTACK1);
+    glutAddMenuEntry("AttackMode 2",ME_ACTION_ATTACK2);
+    glutAddMenuEntry("AttackMode RockMan",ME_ACTION_ATTACK3);
     glutAddMenuEntry("SuperMode",ME_ACTION_SUPER);
     
     glutSetMenu(menu_equ);
