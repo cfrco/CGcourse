@@ -74,6 +74,7 @@ void handle_menu(int menu) {
 
         // Main
         case ME_WALK :
+            popAllState();
             clearState(joints);
             pushFullState(joints,&aniWalkRotation1,50);
             pushFullState(joints,&aniWalkRotation2,50);
@@ -194,33 +195,6 @@ void handle_keyboard(unsigned char key,int x,int y) {
         case '3':
             stopAll(joints);
             break;
-        case '7':
-            clearState(joints);
-            pushState(&stateFire, 10);
-            stateRepeat = true;
-            clearState(joints);
-            attack1(joints);
-            repeatAll(joints,true);
-            break;
-        case '0':
-            popAllState();
-            pushState(&stateRunFire, 10);
-            MoveCone(0);
-            stateRepeat = true;
-            clearState(joints);
-            attack2(joints);
-            repeatAll(joints,true);
-            break;
-        case '-':
-            popAllState();
-            pushState(&stateFireBall, 240);
-            pushState(&stateAttack, 20);
-            stateRepeat = true;
-            drawBall(0);
-            clearState(joints);
-            attack3(joints);
-            repeatAll(joints,true);
-            break;	
     }
 }
 
