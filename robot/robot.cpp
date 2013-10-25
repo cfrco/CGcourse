@@ -192,7 +192,7 @@ void handle_keyboard(unsigned char key,int x,int y) {
             pos_z = 10;
             break;
 
-        case '3':
+        case 'p':
             stopAll(joints);
             break;
     }
